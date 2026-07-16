@@ -25,7 +25,7 @@ jobs:
       - name: Get Version
         id: version
         run: |
-          echo "::set-output name=tag::$(git describe --abbrev=0 --tags)"
+          echo "tag=$(git describe --abbrev=0 --tags)" >> $GITHUB_OUTPUT
 
       # Build the plugin
       - name: Use bun instead of Node.js
@@ -39,10 +39,11 @@ jobs:
       # Package the required files into a zip
       # skip existing dir for mkdir
       # don't fail cp on optional files like styles.css
-      # main.js already in output-dir
+      # main.js is NOT in output-dir
       - name: Package
         run: |
           mkdir -p ${{ env.OUT_DIR }}
+          cp main.js ${{ env.OUT_DIR }}
           cp manifest.json ${{ env.OUT_DIR }}
           cp styles.css ${{ env.OUT_DIR }} 2>/dev/null || :
           cp README.md ${{ env.OUT_DIR }} 2>/dev/null || :
