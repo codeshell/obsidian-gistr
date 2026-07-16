@@ -1,3 +1,5 @@
 /dist
 /*.lnk
 node_modules
+.env
+main.js
