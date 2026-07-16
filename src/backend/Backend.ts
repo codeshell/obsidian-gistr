@@ -281,8 +281,8 @@ css: |
         let css_gh              = ''
 
         const content_css       = await this.GetCSS( el, uuid, ( bGithub ? json.stylesheet : json.embed.css ) )
-        const content_body      = ( bGithub ? json.div : '' )
-        const content_js        = ( bGithub ? '' : await this.GetJavascript( el, uuid, ( css_theme_sel === 'dark' ? json.embed.js_dark : json.embed.js ) ) )
+        const content_body      = ( bGithub ? json.div : json.embed.html )
+        const content_js        = ( bGithub ? '' : '' )
 
         /*
             Declare custom css override
