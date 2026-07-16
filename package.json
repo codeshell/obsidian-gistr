@@ -1,118 +1,118 @@
 {
-    "name": "gistr",
-    "version": "1.7.1",
-    "description": "Integrate Opengist and Github gists into your notes, allowing you to create, update, and share between your notes and gist services",
-    "author": "Aetherinox",
-    "license": "MIT",
-    "main": "main.js",
-    "build": {
-        "appId": "com.gistr.id"
+  "name": "gistr",
+  "version": "1.7.1-patched",
+  "description": "Integrate Opengist and Github gists into your notes, allowing you to create, update, and share between your notes and gist services",
+  "author": "Aetherinox",
+  "license": "MIT",
+  "main": "main.js",
+  "build": {
+    "appId": "com.gistr.id"
+  },
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://buymeacoffee.com/aetherinox"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/Aetherinox/obsidian-gistr/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aetherinox/obsidian-gistr.git"
+  },
+  "contributors": [
+    {
+      "name": "Aetherinox",
+      "email": "118329232+Aetherinox@users.noreply.github.com",
+      "url": "https://github.com/Aetherinox"
     },
-    "funding": [
-        {
-            "type": "individual",
-            "url": "https://buymeacoffee.com/aetherinox"
-        }
-    ],
-    "bugs": {
-        "url": "https://github.com/Aetherinox/obsidian-gistr/issues"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/Aetherinox/obsidian-gistr.git"
-    },
-    "contributors": [
-        {
-            "name": "Aetherinox",
-            "email": "118329232+Aetherinox@users.noreply.github.com",
-            "url": "https://github.com/Aetherinox"
-        },
-        {
-            "name": "EuropaServ",
-            "email": "161414668+EuropaServ@users.noreply.github.com",
-            "url": "https://github.com/EuropaServ"
-        }
-    ],
-    "scripts": {
-        "pretest": "npm run lint",
-        "lint": "eslint src/**/*.ts",
-        "lint:fix": "eslint --fix src/**/*.ts",
-        "pretty": "prettier . --check",
-        "pretty:fix": "prettier . --write",
-        "pretty:ignore": "prettier . --write --ignore-unknown",
-        "start": "rollup --watch --config rollup.config.mjs --environment BUILD,TEST",
-        "dev": "rollup --watch --config rollup.config.mjs --environment BUILD:dev",
-        "build": "rollup --config rollup.config.mjs --environment BUILD:production",
-        "release": "rollup --config rollup.config.mjs --environment BUILD,MINIFY,TEST",
-        "test": "rollup --config rollup.config.mjs --environment TEST",
-        "contrib:add": "all-contributors add",
-        "contrib:generate": "all-contributors generate",
-        "gistr": "node gistr.js",
-        "generate": "node gistr.js generate",
-        "env-gistr": "npx --quiet env-cmd --no-override node gistr.js",
-        "env-uuid": "npx --quiet env-cmd --no-override node gistr.js uuid",
-        "env-guid": "npx --quiet env-cmd --no-override node gistr.js guid",
-        "env-version": "node -p require('./package.json').version;"
-    },
-    "keywords": [
-        "markdown",
-        "obsidian.md",
-        "obsidian",
-        "gist",
-        "gistr",
-        "opengist",
-        "github"
-    ],
-    "devDependencies": {
-        "@aetherinox/noxenv": "^1.1.1",
-        "@codemirror/view": "^6.26.3",
-        "@rollup/plugin-commonjs": "^25.0.7",
-        "@rollup/plugin-image": "^3.0.3",
-        "@rollup/plugin-node-resolve": "^15.2.3",
-        "@rollup/plugin-replace": "^5.0.5",
-        "@rollup/plugin-terser": "^0.4.4",
-        "@rollup/plugin-typescript": "^11.1.6",
-        "@types/chrome": "^0.0.268",
-        "@types/node": "^20.14.10",
-        "@types/semver": "^7.5.8",
-        "@types/uuid": "^10.0.0",
-        "typescript-eslint": "^8.35.0",
-        "@typescript-eslint/parser": "^7.16.0",
-        "@typescript-eslint/eslint-plugin": "^7.16.0",
-        "eslint-config-prettier": "^9.1.0",
-        "eslint-plugin-prettier": "^5.1.3",
-        "@stylistic/eslint-plugin-js": "3.1.0",
-        "@stylistic/eslint-plugin-ts": "3.1.0",
-        "@stylistic/eslint-plugin-plus": "3.1.0",
-        "electron": "^37.0.0",
-        "obsidian": "^1.8.7",
-        "rollup": "^4.44.0",
-        "rollup-plugin-license": "^3.6.0",
-        "simple-git": "^3.24.0",
-        "tslib": "^2.2.0",
-        "typescript": "^5.4.3",
-        "all-contributors-cli": "^6.26.1",
-        "prettier": "^3.2.5"
-    },
-    "dependencies": {
-        "@aetherinox/noxkit": "https://github.com/Aetherinox/noxkit",
-        "@octokit/rest": "^22.0.0",
-        "@simonwep/pickr": "1.9.0",
-        "colortranslator": "^5.0.0",
-        "front-matter": "^4.0.2",
-        "semver": "^7.7.2",
-        "uuid": "^11.1.0",
-        "yaml": "^2.8.0"
-    },
-    "optionalDependencies": {
-        "@rollup/rollup-linux-x64-gnu": "4.9.5"
-    },
-    "files": [
-        "tests/",
-        "LICENSE.md",
-        "README.md",
-        "main.js",
-        "styles.css",
-        "manifest.json"
-    ]
+    {
+      "name": "EuropaServ",
+      "email": "161414668+EuropaServ@users.noreply.github.com",
+      "url": "https://github.com/EuropaServ"
+    }
+  ],
+  "scripts": {
+    "pretest": "npm run lint",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint --fix src/**/*.ts",
+    "pretty": "prettier . --check",
+    "pretty:fix": "prettier . --write",
+    "pretty:ignore": "prettier . --write --ignore-unknown",
+    "start": "rollup --watch --config rollup.config.mjs --environment BUILD,TEST",
+    "dev": "rollup --watch --config rollup.config.mjs --environment BUILD:dev",
+    "build": "rollup --config rollup.config.mjs --environment BUILD:production",
+    "release": "rollup --config rollup.config.mjs --environment BUILD,MINIFY,TEST",
+    "test": "rollup --config rollup.config.mjs --environment TEST",
+    "contrib:add": "all-contributors add",
+    "contrib:generate": "all-contributors generate",
+    "gistr": "node gistr.js",
+    "generate": "node gistr.js generate",
+    "env-gistr": "npx --quiet env-cmd --no-override node gistr.js",
+    "env-uuid": "npx --quiet env-cmd --no-override node gistr.js uuid",
+    "env-guid": "npx --quiet env-cmd --no-override node gistr.js guid",
+    "env-version": "node -p require('./package.json').version;"
+  },
+  "keywords": [
+    "markdown",
+    "obsidian.md",
+    "obsidian",
+    "gist",
+    "gistr",
+    "opengist",
+    "github"
+  ],
+  "devDependencies": {
+    "@aetherinox/noxenv": "^1.1.1",
+    "@codemirror/view": "^6.26.3",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-image": "^3.0.3",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.5",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/chrome": "^0.0.268",
+    "@types/node": "^20.14.10",
+    "@types/semver": "^7.5.8",
+    "@types/uuid": "^10.0.0",
+    "typescript-eslint": "^8.35.0",
+    "@typescript-eslint/parser": "^7.16.0",
+    "@typescript-eslint/eslint-plugin": "^7.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "@stylistic/eslint-plugin-js": "3.1.0",
+    "@stylistic/eslint-plugin-ts": "3.1.0",
+    "@stylistic/eslint-plugin-plus": "3.1.0",
+    "electron": "^37.0.0",
+    "obsidian": "^1.8.7",
+    "rollup": "^4.44.0",
+    "rollup-plugin-license": "^3.6.0",
+    "simple-git": "^3.24.0",
+    "tslib": "^2.2.0",
+    "typescript": "^5.4.3",
+    "all-contributors-cli": "^6.26.1",
+    "prettier": "^3.2.5"
+  },
+  "dependencies": {
+    "@aetherinox/noxkit": "https://github.com/Aetherinox/noxkit",
+    "@octokit/rest": "^22.0.0",
+    "@simonwep/pickr": "1.9.0",
+    "colortranslator": "^5.0.0",
+    "front-matter": "^4.0.2",
+    "semver": "^7.7.2",
+    "uuid": "^11.1.0",
+    "yaml": "^2.8.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.9.5"
+  },
+  "files": [
+    "tests/",
+    "LICENSE.md",
+    "README.md",
+    "main.js",
+    "styles.css",
+    "manifest.json"
+  ]
 }
