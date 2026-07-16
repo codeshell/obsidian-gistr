@@ -1,0 +1,62 @@
+name: Release Obsidian Plugin
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - "*" # Push events to matching any tag format, i.e. 1.0, 20.15.10
+
+permissions:
+  contents: write # to create a release and upload assets
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: 'recursive'
+          fetch-depth: 0
+
+      # Get the version number and put it in a variable
+      - name: Get Version
+        id: version
+        run: |
+          echo "::set-output name=tag::$(git describe --abbrev=0 --tags)"
+
+      # Build the plugin
+      - name: Use bun instead of Node.js
+        uses: oven-sh/setup-bun@v2
+      - name: Build (bun)
+        id: build
+        run: |
+          bun install
+          bun run build --output-dir ${{ github.event.repository.name }}
+
+      # Package the required files into a zip
+      # skip existing dir for mkdir
+      # don't fail cp on optional files like styles.css
+      # main.js already in output-dir
+      - name: Package
+        run: |
+          mkdir -p ${{ github.event.repository.name }}
+          cp manifest.json ${{ github.event.repository.name }}
+          cp styles.css ${{ github.event.repository.name }} 2>/dev/null || :
+          cp README.md ${{ github.event.repository.name }} 2>/dev/null || :
+          zip -r ${{ github.event.repository.name }}.zip ${{ github.event.repository.name }}
+          mv ${{ github.event.repository.name }}.zip ${{ github.event.repository.name }}/${{ github.event.repository.name }}-${{ steps.version.outputs.tag }}.zip
+
+      - name: Release with assets
+        uses: softprops/action-gh-release@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ github.ref }}
+        with:
+          tag_name: ${{ github.ref }}
+          # name: ${{ github.ref }}
+          draft: true
+          prerelease: false
+          working_directory: ${{ github.event.repository.name }}
+          files: |
+            *.*
+          generate_release_notes: true
