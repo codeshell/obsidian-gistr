@@ -199,7 +199,8 @@ css: |
         styles.background   = n_bg
         styles.theme        = og_ThemeOV
         styles.color_text   = n_textcolor
-
+        styles.height = n_height?.toString().trim() ?? ''
+        if (styles.height.match(/^\d+$/) !== null) {styles.height = styles.height + 'px'}
         /*
             handle error
         */
@@ -242,53 +243,55 @@ css: |
     }
 
     /*
-        Gist > Generate
+        Gist > Generate > Webview
 
-        create new iframe for each gist, assign it a uid, set the needed attributes, and generate the css, js
+        create new webview for each gist, assign it a uid, set the needed attributes, and generate the css, js
     */
 
     private async GistGenerate( plugin: GistrPlugin, el: HTMLElement, host: string, uuid: string, json: ItemJSON, bGithub: boolean, style: StyleProperties )
     {
-
         /*
-            create uuid and iframe
+            create uuid a webview
         */
 
-        const gid               = `${ sender }-${ uuid }-${ plugin.generateUuid( ) }`
-        const ct_iframe         = document.createElement( 'iframe' )
-        ct_iframe.id            = gid
+        const gid = `${sender}-${uuid}-${plugin.generateUuid()}`
+        const partition = `${sender}-webview` // same session for all plugin webview.
+        const ct_webview = document.createElement('webview')
+        ct_webview.id = gid
 
-        ct_iframe.classList.add ( `${ sender }-container` )
-        ct_iframe.setAttribute  ( 'sandbox',    'allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation' )
-        ct_iframe.setAttribute  ( 'loading',    'lazy' )
-        ct_iframe.setAttribute  ( 'width',      '100%' )
-
-        /*
-            https://fonts.googleapis.com
-
-            policy directive error if certain attributes arent used. doesnt affect the plugin, but erors are bad
-        */
-
-        ct_iframe.setAttribute      ( 'csp', 'default-src * data: blob: \'unsafe-inline\' \'unsafe-eval\'; script-src * \'unsafe-inline\' \'unsafe-eval\'; connect-src * \'unsafe-inline\'; img-src * data: blob: \'unsafe-inline\'; frame-src *; style-src * \'unsafe-inline\';' )
+        ct_webview.classList.add(`${sender}-container`)
+        ct_webview.setAttribute('partition', `persist:${partition}`)
+        ct_webview.setAttribute('allowpopups', '')
+        ct_webview.setAttribute('useragent', '')
+        // ct_webview.setAttribute('width', '100%')
+        // ct_webview.setAttribute('height', '100%')
 
         /*
             assign css, body, js
         */
+        const css_height = style.height || 'auto'
+        ct_webview.style.width = '100%'
+        ct_webview.style.height = css_height
+        const css_theme_ovr = style.theme !== '' ? style.theme.toLowerCase() : ''
+        const css_theme_set = this.settings.theme ? this.settings.theme.toLowerCase() : ''
+        const css_theme_sel = (css_theme_ovr || css_theme_set) === 'dark' ? 'dark' : 'light'
+        let css_og = ''
+        let css_gh = ''
 
-        const css_theme_ovr     = ( style.theme !== '' ) ? style.theme.toLowerCase( ) : ''
-        const css_theme_sel     = ( css_theme_ovr !== '' ) ? css_theme_ovr : ( this.settings.theme.toLowerCase( ) === 'dark' ) ? 'dark' : ( this.settings.theme.toLowerCase( ) === 'light' ) ? 'light'  : 'light'
-        let css_og              = ''
-        let css_gh              = ''
-
-        const content_css       = await this.GetCSS( el, uuid, ( bGithub ? json.stylesheet : json.embed.css ) )
-        const content_body      = ( bGithub ? json.div : '' )
-        const content_js        = ( bGithub ? '' : await this.GetJavascript( el, uuid, ( css_theme_sel === 'dark' ? json.embed.js_dark : json.embed.js ) ) )
+        const content_css = bGithub ? await this.GetCSS(el, uuid, json.stylesheet) : ''
+        const content_body = bGithub ? json.div : ''
+        const content_js = bGithub
+            ? ''
+            : '<script src="' + (css_theme_sel === 'dark' ? json.embed.js_dark : json.embed.js) + '"></script>'
 
         /*
             Declare custom css override
         */
 
-        const css_override      = ( ( bGithub && this.settings.css_gh && this.settings.css_gh.length > 0 ) ? ( this.settings.css_gh ) : ( this.settings.css_og && this.settings.css_og.length > 0 && this.settings.css_og ) ) || ''
+        const css_override =
+            (bGithub && this.settings.css_gh && this.settings.css_gh.length > 0
+                ? this.settings.css_gh
+                : this.settings.css_og && this.settings.css_og.length > 0 && this.settings.css_og) || ''
 
         /*
             Update style theme value
@@ -309,57 +312,42 @@ css: |
                           working with OpenGist developer to re-do the HTML generated when embedding a gist.
         */
 
-        const css_og_append     = this.CSS_Get_OpenGist( style )
-        const css_gh_append     = this.CSS_Get_Github( style )
+        const css_og_append = this.CSS_Get_OpenGist(style)
+        const css_gh_append = this.CSS_Get_Github(style)
 
         /*
             Github > Dark Theme
         */
 
-        if ( bGithub === false )
-            css_og = css_og_append
-        else
-            css_gh = css_gh_append
+        if (bGithub === false) css_og = css_og_append
+        else css_gh = css_gh_append
 
         /*
             generate html output
         */
 
-        const html_output =
+        const html_output = `
+<html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            html, body { height: 100%; margin: 0; padding: 0; }
+            ${content_css}
+            ${css_override}
+            ${css_og}
+            ${css_gh}
+        </style>
+        ${this.EventListener(gid)}
+    </head>
+    <body class="gistr-theme-${css_theme_sel}">
+        ${content_body}
+        ${content_js}
+    </body>
+</html>
         `
-        <html>
-            <head>
-                <style>
-                    html, body { height: 100%; margin: 0; padding: 0; }
-                </style>
-
-                ${ this.EventListener( gid ) }
-
-                <style>
-                    ${ content_css }
-                </style>
-
-                <! –– Injected CSS ––>
-                <style>
-                ${ css_override }
-                ${ css_og }
-                ${ css_gh }
-                </style>
-
-                <script>
-                    ${ content_js }
-                </script>
-
-            </head>
-
-            <body class="gistr-theme-${ css_theme_sel }">
-                ${ content_body }
-            </body>
-        </html>
-        `
-
-        ct_iframe.srcdoc = html_output
-        el.appendChild( ct_iframe )
+        //ct_webview.src = `data:text/html;base64,${btoa(unescape(encodeURIComponent(html_output)))}`
+        ct_webview.src = `data:text/html;base64,${Buffer.from(html_output, 'utf8').toString('base64')}`
+        el.appendChild(ct_webview)
     }
 
     /*
@@ -803,7 +791,7 @@ css: |
         const uuid                          = evn.data.gid
         const scrollHeight                  = evn.data.scrollHeight
 
-        const gist_Container: HTMLElement   = document.querySelector( 'iframe#' + uuid )
+        const gist_Container: HTMLElement   = document.getElementById( uuid )
 
         gist_Container.setAttribute( 'height', scrollHeight )
     }
